@@ -3,107 +3,81 @@
 import type { Theme, ThemeOptions } from "@mui/material/styles"
 import { createTheme } from "@mui/material/styles"
 
-/**
- * The palette of named colors we pick from for
- * configuring the default nova themes.
- */
-const colors = {
-  white: "#FFFFFF",
-  midnightblue: "#001337",
-  lightbuttonblue: "#47D3FF",
-  midnightgray: "#DDE0E4",
-  midnightgray500: "#828B9B",
-  skyblue500: "#06B8F1",
-  skyblue600: "#0094CE",
-  darkishblue: "#262F42",
-  darkestblue: "#101629",
-  grayishblue: "#505968",
-  darkgrayishblue: "#363c4b",
-  scaryred: "#FF0E65",
-  tealGreen: "#1AC0B2",
-  magenta: "#EA3785",
-}
-
-/**
- * Settings used to construct the Nova default theme.
- * The dark theme is the default and defines the structure of the
- * settings.
- */
-export const novaDarkSettings = {
-  mode: "dark" as "dark" | "light",
-  colors: {
-    primary: colors.skyblue500,
-    textDefault: colors.white,
-    textSubtle: colors.midnightgray,
+export const novaDarkVariant: ThemeOptions = {
+  palette: {
+    mode: "dark",
+    text: {
+      primary: "rgba(255, 255, 255, 1)",
+      secondary: "rgba(255, 255, 255, 0.7)",
+      disabled: "rgba(255, 255, 255, 0.38)",
+    },
+    primary: {
+      main: "rgba(142, 86, 252, 1)",
+      dark: "rgba(136, 58, 255, 1)",
+      light: "rgba(220, 215, 251, 1)",
+      contrastText: "rgba(255, 255, 255, 0.87)",
+    },
+    secondary: {
+      main: "rgba(100, 255, 218, 1)",
+      dark: "rgba(38, 166, 154, 1)",
+      light: "rgba(167, 255, 235, 1)",
+      contrastText: "rgba(0, 0, 0, 1)",
+    },
+    error: {
+      main: "rgba(239, 83, 80, 1)",
+      dark: "rgba(229, 57, 53, 1)",
+      light: "rgba(239, 154, 154, 1)",
+      contrastText: "rgba(0, 0, 0, 1)",
+    },
     background: {
-      default: colors.darkishblue,
-      panel: colors.darkestblue,
+      default: "rgba(2, 6, 23, 1)",
+      paper: "rgba(17, 19, 31, 1)",
+    },
+  },
+  typography: {
+    allVariants: {
+      color: "rgba(255, 255, 255, 0.87)",
     },
   },
 }
-
-export type NovaThemeSettings = typeof novaDarkSettings
-
-export const novaLightSettings = {
-  mode: "light",
-  colors: {
-    primary: colors.skyblue500,
-    textDefault: colors.darkishblue,
-    textSubtle: colors.midnightgray,
-    background: {
-      default: colors.skyblue500,
-      panel: colors.white,
-    },
-  },
-} satisfies NovaThemeSettings
 
 /**
  * Create the default Wandelbots Nova Material UI theme, overriding
  * any defaults with the provided theme options.
  */
 export function createNovaMuiTheme(opts: ThemeOptions): Theme {
-  let isDark = true
-  if (opts.palette?.mode === "light") {
-    isDark = false
-  } else if (opts.palette?.mode !== "dark") {
-    const browserPrefersLight =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-color-scheme: light)")?.matches
-    isDark = !browserPrefersLight
-  }
+  // Currently we only support the dark theme
+  const isDark = true
+  // let isDark = true
+  // if (opts.palette?.mode === "light") {
+  //   isDark = false
+  // } else if (opts.palette?.mode !== "dark") {
+  //   const browserPrefersLight =
+  //     typeof window !== "undefined" &&
+  //     window.matchMedia?.("(prefers-color-scheme: light)")?.matches
+  //   isDark = !browserPrefersLight
+  // }
 
-  const nova = isDark ? novaDarkSettings : novaLightSettings
+  const variant = novaDarkVariant
 
   const theme = createTheme({
-    palette: {
-      mode: nova.mode,
-      primary: {
-        main: nova.colors.primary,
-      },
-      background: {
-        default: nova.colors.background.default,
-        paper: nova.colors.background.panel,
-      },
-    },
-    typography: {
-      allVariants: {
-        color: nova.colors.textDefault,
-      },
-    },
+    ...variant,
     components: {
       MuiSelect: {
         styleOverrides: {
-          root: {
-            backgroundColor: isDark ? "#505968" : undefined,
-            borderRadius: "10px",
-            color: "currentColor",
-            "& > div": {
-              padding: "4px 16px",
-            },
-            "& fieldset": {
-              border: isDark ? "none" : undefined,
-            },
-          },
+          root: ({ ownerState }) => ({
+            ...(!ownerState.label && {
+              backgroundColor: isDark ? "#505968" : undefined,
+              borderRadius: "10px",
+              color: "currentColor",
+              "& > div": {
+                padding: "4px 16px",
+              },
+              "& fieldset": {
+                border: isDark ? "none" : undefined,
+              },
+            }),
+          }),
         },
       },
       MuiChip: {
@@ -111,7 +85,6 @@ export function createNovaMuiTheme(opts: ThemeOptions): Theme {
           root: {
             backgroundColor: isDark ? "#505968" : undefined,
             borderRadius: "10px",
-            color: "currentColor",
           },
         },
       },
@@ -161,7 +134,6 @@ export function createNovaMuiTheme(opts: ThemeOptions): Theme {
         },
       },
     },
-    nova,
   })
 
   if (opts) {
