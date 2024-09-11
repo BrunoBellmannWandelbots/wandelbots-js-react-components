@@ -1,8 +1,9 @@
 import type { StoryObj } from "@storybook/react"
 import { Euler, Vector3, WebGLRenderer } from "three"
-import { Robot, SupportedRobot } from "../../src"
+import type { SupportedRobot } from "../../src"
+import { Robot } from "../../src"
+import type { ConnectedMotionGroup } from "@wandelbots/wandelbots-js"
 import {
-  ConnectedMotionGroup,
   NovaClient,
   type MotionGroupStateResponse,
 } from "@wandelbots/wandelbots-js"
@@ -11,6 +12,8 @@ import { useEffect, useState } from "react"
 
 export default {
   ...sharedStoryConfig,
+  tags: ["!autodocs"],
+  tags: ["!dev"],
   title: "3D View/Robot",
 }
 
@@ -41,5 +44,5 @@ function SupportedRobotScene(
 export const RobotStory: StoryObj<typeof SupportedRobotScene> = {
   args: {},
   render: (args) => <SupportedRobotScene {...args} />,
-  name: "Default",
+  name: "Robot",
 }
